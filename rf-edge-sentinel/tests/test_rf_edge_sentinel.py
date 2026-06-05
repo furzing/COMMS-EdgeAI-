@@ -16,6 +16,11 @@ from rf_edge_sentinel.evaluation import evaluate_model, write_evaluation_report
 from rf_edge_sentinel.features import extract_features, feature_dim
 from rf_edge_sentinel.model import EdgeKnnModel, train_edge_model
 from rf_edge_sentinel.quantization import quantize_onnx_model
+from rf_edge_sentinel.public_data import (
+    evaluate_real_iq_file,
+    list_public_iq_recordings,
+    read_c16le_iq,
+)
 from rf_edge_sentinel.scenarios import (
     ConfidenceDriftMonitor,
     apply_clock_drift,
@@ -128,6 +133,56 @@ class RfEdgeSentinelTests(unittest.TestCase):
         self.assertIn(label, SIGNAL_LABELS)
         self.assertEqual(scenario, "degraded_comms")
         self.assertEqual(iq.shape, (1024,))
+
+    def test_public_iq_catalog_has_satnogs_sources(self) -> None:
+        catalog = list_public_iq_recordings()
+
+        self.assertGreaterEqual(len(catalog), 1)
+        self.assertEqual(catalog[0]["dtype"], "c16le")
+        self.assertEqual(catalog[0]["license"], "CC-BY-4.0")
+
+    def test_c16le_reader_parses_interleaved_iq(self) -> None:
+        values = np.array([32767, 0, 0, -32768], dtype="<i2")
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = Path(tmpdir) / "sample.raw"
+            values.tofile(path)
+            iq = read_c16le_iq(path)
+
+        self.assertEqual(iq.shape, (2,))
+        self.assertAlmostEqual(float(iq[0].real), 32767 / 32768, places=5)
+        self.assertAlmostEqual(float(iq[1].imag), -1.0, places=5)
+
+    def test_real_iq_evaluation_writes_report(self) -> None:
+        config = SignalConfig(sample_rate_hz=48_000.0, window_size=1024, snr_db_min=14.0, snr_db_max=24.0)
+        model = train_spectrogram_cnn(samples_per_class=4, signal_config=config, seed=88)
+        rng = np.random.default_rng(89)
+        iq = generate_iq("ofdm", config, rng)
+        interleaved = np.column_stack(
+            [
+                np.clip(iq.real * 32767, -32768, 32767),
+                np.clip(iq.imag * 32767, -32768, 32767),
+            ]
+        ).astype("<i2")
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            model_path = Path(tmpdir) / "model.json"
+            raw_path = Path(tmpdir) / "sample.raw"
+            report_path = Path(tmpdir) / "real_eval.json"
+            model.save(model_path)
+            interleaved.tofile(raw_path)
+            report = evaluate_real_iq_file(
+                model_path=model_path,
+                input_path=raw_path,
+                output_path=report_path,
+                config=config,
+                windows=1,
+                source_id="test_real_iq",
+            )
+
+        self.assertEqual(report["source_id"], "test_real_iq")
+        self.assertEqual(report["windows"], 1)
+        self.assertEqual(sum(report["prediction_counts"].values()), 1)
 
     def test_evaluation_report_contains_all_scenarios(self) -> None:
         config = SignalConfig(window_size=1024, snr_db_min=14.0, snr_db_max=24.0)

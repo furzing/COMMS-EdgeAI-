@@ -19,6 +19,8 @@ All data in this version is synthetic. No SDR, satellite, tactical, or private c
 
 The generator produces baseband windows using randomized modulation parameters, SNR ranges, carrier offsets, phase rotation, gain variation, optional fading, packet dropouts, clock drift, and confidence-drift scenarios.
 
+The repo also includes a public real-IQ evaluation path for SatNOGS recordings. Those files are not training data and are not committed to the repo.
+
 ## Intended Use
 
 Use this dataset for:
@@ -60,6 +62,21 @@ Scenario profiles:
 - No real interference environment.
 - No dataset split registry or immutable sample manifests yet.
 
+## Public Real-IQ Evaluation Data
+
+Source: https://data.camras.nl/satnogs/
+
+The source lists raw Dwingeloo Telescope SatNOGS recordings as 48 kHz, 16-bit complex IQ under CC-BY 4.0. The project downloads small byte ranges into `data/`, which is git-ignored.
+
+Current evaluated chunk:
+
+- Recording: `satnogs_uresat1_7883687`
+- Satellite: URESAT-1
+- Observation: `7883687`
+- Byte range: `16777216-18874367`
+- Bytes: `2097152`
+- Report: `reports/real_satnogs_uresat1_7883687_eval.json`
+
 ## Data Governance
 
 The dataset is safe to generate and share because it is synthetic. If real receive-only data is added later, the project should add:
@@ -79,4 +96,3 @@ $env:PYTHONPATH="src"
 python -m rf_edge_sentinel train --samples-per-class 240 --model-out artifacts\rf_spectrogram_cnn.json
 python -m rf_edge_sentinel evaluate --model artifacts\rf_spectrogram_cnn.json --out reports\rf_spectrogram_cnn_eval.json --windows-per-scenario 160
 ```
-

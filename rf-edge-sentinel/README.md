@@ -87,6 +87,39 @@ TensorRT:
 not available on this machine
 ```
 
+## Real Public IQ Data
+
+This repo can also evaluate public SatNOGS IQ recordings from the Dwingeloo radio telescope. The files are real satellite observations, 48 kHz complex 16-bit IQ, and listed as CC-BY 4.0 by the source.
+
+List curated recordings:
+
+```powershell
+python -m rf_edge_sentinel list-public-iq
+```
+
+Download a small byte range instead of the full 100 MB+ file:
+
+```powershell
+python -m rf_edge_sentinel download-public-iq --recording satnogs_uresat1_7883687 --out data\public\satnogs_uresat1_7883687_2mb.raw --max-mb 2 --offset-mb 16
+```
+
+Evaluate the chunk:
+
+```powershell
+python -m rf_edge_sentinel evaluate-real-iq --model artifacts\rf_spectrogram_cnn.json --input data\public\satnogs_uresat1_7883687_2mb.raw --out reports\real_satnogs_uresat1_7883687_eval.json --source-id satnogs_uresat1_7883687 --windows 120 --sample-rate-hz 48000 --window-size 4096
+```
+
+Current URESAT-1 chunk result:
+
+```text
+prediction_counts: qpsk = 120
+mean_confidence: 0.5953
+mean_anomaly_score: 0.9367
+anomaly_rate: 0.225
+```
+
+The real data is not labeled by modulation in this repo, so this is not an accuracy score. It is a domain-shift check: does the model become overconfident, does it flag anomalies, and what class does real satellite RF resemble?
+
 ## Quantization
 
 ```powershell
@@ -110,8 +143,10 @@ See:
 
 - `docs/model-card.md`
 - `docs/dataset-card.md`
+- `docs/public-real-data.md`
 - `docs/quantization-report.md`
 - `reports/rf_spectrogram_cnn_eval.json`
+- `reports/real_satnogs_uresat1_7883687_eval.json`
 
 ## Dashboard
 
@@ -155,4 +190,3 @@ Next useful work:
 - Revisit INT8 with quantization-aware training
 - Add latency histograms and anomaly timelines to the dashboard
 - Add real receive-only SDR ingestion when hardware is available
-

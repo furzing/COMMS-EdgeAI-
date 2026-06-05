@@ -10,6 +10,12 @@ from rf_edge_sentinel.cnn import SmallSpectrogramCnn, train_spectrogram_cnn
 from rf_edge_sentinel.evaluation import write_evaluation_report
 from rf_edge_sentinel.model import EdgeKnnModel, train_edge_model
 from rf_edge_sentinel.quantization import quantize_onnx_model
+from rf_edge_sentinel.public_data import (
+    download_recording_range,
+    evaluate_real_iq_file,
+    get_public_iq_recording,
+    list_public_iq_recordings,
+)
 from rf_edge_sentinel.runtime import load_detector_model, optional_runtime_status, runtime_comparison
 from rf_edge_sentinel.scenarios import SCENARIOS
 from rf_edge_sentinel.signals import SIGNAL_LABELS, SignalConfig
@@ -86,6 +92,25 @@ def main(argv: list[str] | None = None) -> int:
     evaluate_parser.add_argument("--quantized-onnx", type=Path)
     _add_signal_args(evaluate_parser)
 
+    subparsers.add_parser("list-public-iq", help="list curated public real IQ recordings")
+
+    download_parser = subparsers.add_parser("download-public-iq", help="download a byte range from a public IQ recording")
+    download_parser.add_argument("--recording", required=True)
+    download_parser.add_argument("--out", type=Path, required=True)
+    download_parser.add_argument("--max-mb", type=float, default=4.0)
+    download_parser.add_argument("--offset-mb", type=float, default=0.0)
+
+    real_eval_parser = subparsers.add_parser("evaluate-real-iq", help="evaluate a local c16le real IQ file")
+    real_eval_parser.add_argument("--model", type=Path, required=True)
+    real_eval_parser.add_argument("--input", type=Path, required=True)
+    real_eval_parser.add_argument("--out", type=Path, default=Path("reports/real_iq_eval.json"))
+    real_eval_parser.add_argument("--source-id", default="real_iq")
+    real_eval_parser.add_argument("--windows", type=int, default=120)
+    real_eval_parser.add_argument("--stride", type=int)
+    real_eval_parser.add_argument("--sample-rate-hz", type=float, default=48_000.0)
+    real_eval_parser.add_argument("--window-size", type=int, default=4096)
+    real_eval_parser.add_argument("--samples-per-symbol", type=int, default=8)
+
     subparsers.add_parser("runtime-status", help="show optional runtime availability")
 
     args = parser.parse_args(argv)
@@ -94,6 +119,11 @@ def main(argv: list[str] | None = None) -> int:
         return 0
     if args.command == "export-onnx":
         return _export_onnx(args)
+    if args.command == "list-public-iq":
+        print(json.dumps(list_public_iq_recordings(), indent=2, sort_keys=True))
+        return 0
+    if args.command == "download-public-iq":
+        return _download_public_iq(args)
 
     config = _config_from_args(args)
 
@@ -111,6 +141,8 @@ def main(argv: list[str] | None = None) -> int:
         return _quantize_onnx(args, config)
     if args.command == "evaluate":
         return _evaluate(args, config)
+    if args.command == "evaluate-real-iq":
+        return _evaluate_real_iq(args, config)
     if args.command == "serve":
         return _serve(args, config)
     raise AssertionError("unreachable")
@@ -251,6 +283,41 @@ def _evaluate(args: argparse.Namespace, config: SignalConfig) -> int:
     )
     print(f"saved report: {args.out}")
     print(json.dumps(_evaluation_summary(report), indent=2, sort_keys=True))
+    return 0
+
+
+def _download_public_iq(args: argparse.Namespace) -> int:
+    recording = get_public_iq_recording(args.recording)
+    manifest = download_recording_range(
+        recording=recording,
+        output_path=args.out,
+        max_mb=args.max_mb,
+        offset_mb=args.offset_mb,
+    )
+    print(json.dumps(manifest, indent=2, sort_keys=True))
+    return 0
+
+
+def _evaluate_real_iq(args: argparse.Namespace, config: SignalConfig) -> int:
+    report = evaluate_real_iq_file(
+        model_path=args.model,
+        input_path=args.input,
+        output_path=args.out,
+        config=config,
+        windows=args.windows,
+        stride=args.stride,
+        source_id=args.source_id,
+    )
+    summary = {
+        "source_id": report["source_id"],
+        "windows": report["windows"],
+        "prediction_counts": report["prediction_counts"],
+        "mean_confidence": report["mean_confidence"],
+        "mean_anomaly_score": report["mean_anomaly_score"],
+        "anomaly_rate": report["anomaly_rate"],
+        "report": str(args.out),
+    }
+    print(json.dumps(summary, indent=2, sort_keys=True))
     return 0
 
 
