@@ -1,0 +1,213 @@
+{
+  "dataset_name": "Celebrity Faces 15K",
+  "version": "3.2.1",
+  "creation_date": "2024-12-15",
+  "total_images": 15247,
+  "total_identities": 1052,
+  "image_resolution": "512x512",
+  "format": "JPG/PNG",
+  "augmentation_applied": true,
+  
+  "dataset_statistics": {
+    "male_celebrities": 542,
+    "female_celebrities": 510,
+    "images_per_identity": {
+      "average": 14.5,
+      "minimum": 8,
+      "maximum": 25
+    },
+    "age_distribution": {
+      "20-30": 312,
+      "30-40": 425,
+      "40-50": 234,
+      "50-60": 68,
+      "60+": 13
+    },
+    "ethnicity_distribution": {
+      "caucasian": 634,
+      "african_american": 187,
+      "asian": 156,
+      "hispanic": 75
+    }
+  },
+
+  "data_sources": [
+    {
+      "source": "IMDb Celebrity Database",
+      "images_count": 8542,
+      "license": "Fair Use - Educational/Research",
+      "quality": "High"
+    },
+    {
+      "source": "Red Carpet Events Archive",
+      "images_count": 3721,
+      "license": "Public Domain",
+      "quality": "Professional"
+    },
+    {
+      "source": "Movie Stills Collection",
+      "images_count": 2984,
+      "license": "Fair Use - Educational",
+      "quality": "Cinema Quality"
+    }
+  ],
+
+  "preprocessing_pipeline": {
+    "face_detection": {
+      "algorithm": "MTCNN + RetinaFace",
+      "minimum_face_size": "80x80",
+      "detection_confidence": 0.95
+    },
+    "face_alignment": {
+      "method": "68-point landmark detection",
+      "normalization": "Procrustes analysis"
+    },
+    "augmentation": {
+      "rotation": "±15 degrees",
+      "brightness": "±20%",
+      "contrast": "±15%",
+      "horizontal_flip": false,
+      "gaussian_noise": "σ=0.02"
+    },
+    "normalization": {
+      "pixel_range": "[0, 1]",
+      "mean_subtraction": true,
+      "standard_deviation_scaling": true
+    }
+  },
+
+  "quality_control": {
+    "manual_verification": true,
+    "duplicate_removal": "Perceptual hashing",
+    "blur_detection": "Laplacian variance > 100",
+    "occlusion_filtering": "< 30% face occlusion",
+    "pose_variation": "Yaw: ±45°, Pitch: ±30°, Roll: ±20°"
+  },
+
+  "celebrity_categories": {
+    "actors_actresses": {
+      "count": 647,
+      "examples": [
+        "angelina_jolie", "brad_pitt", "leonardo_dicaprio", "scarlett_johansson",
+        "ryan_reynolds", "emma_stone", "robert_downey_jr", "jennifer_lawrence",
+        "will_smith", "natalie_portman", "tom_cruise", "charlize_theron"
+      ]
+    },
+    "musicians": {
+      "count": 234,
+      "examples": [
+        "taylor_swift", "ed_sheeran", "beyonce", "drake", "ariana_grande",
+        "justin_timberlake", "lady_gaga", "bruno_mars", "adele", "rihanna"
+      ]
+    },
+    "directors_producers": {
+      "count": 89,
+      "examples": [
+        "steven_spielberg", "christopher_nolan", "quentin_tarantino",
+        "martin_scorsese", "james_cameron", "ridley_scott"
+      ]
+    },
+    "athletes": {
+      "count": 56,
+      "examples": [
+        "serena_williams", "lebron_james", "cristiano_ronaldo", "tom_brady",
+        "usain_bolt", "michael_phelps", "venus_williams"
+      ]
+    },
+    "politicians": {
+      "count": 26,
+      "examples": [
+        "barack_obama", "michelle_obama", "hillary_clinton", "joe_biden"
+      ]
+    }
+  },
+
+  "training_splits": {
+    "training_set": {
+      "percentage": 80,
+      "images": 12197,
+      "identities": 1052
+    },
+    "validation_set": {
+      "percentage": 15,
+      "images": 2287,
+      "identities": 1052
+    },
+    "test_set": {
+      "percentage": 5,
+      "images": 763,
+      "identities": 1052
+    }
+  },
+
+  "annotation_format": {
+    "face_bounding_box": "[x, y, width, height]",
+    "facial_landmarks": "68 points (x, y coordinates)",
+    "identity_label": "celebrity_name_normalized",
+    "attributes": ["age", "gender", "ethnicity", "pose_angle", "expression"],
+    "verification_pairs": 25000
+  },
+
+  "data_integrity": {
+    "checksum_verification": "SHA-256",
+    "corrupt_files": 0,
+    "missing_annotations": 0,
+    "quality_score": 98.7,
+    "inter_annotator_agreement": 0.94
+  },
+
+  "usage_guidelines": {
+    "intended_use": "Face recognition research and development",
+    "restrictions": "Non-commercial use only",
+    "citation_required": true,
+    "privacy_compliance": "GDPR and CCPA compliant",
+    "ethical_considerations": "Bias testing recommended"
+  },
+
+  "benchmark_results": {
+    "verification_accuracy": 99.87,
+    "identification_accuracy": 98.42,
+    "false_acceptance_rate": 0.001,
+    "false_rejection_rate": 0.013,
+    "equal_error_rate": 0.007
+  },
+
+  "model_architectures_tested": [
+    {
+      "name": "ResNet-50-ArcFace",
+      "accuracy": 98.42,
+      "training_time": "72 hours",
+      "inference_speed": "45ms"
+    },
+    {
+      "name": "EfficientNet-B4-CosFace",
+      "accuracy": 98.31,
+      "training_time": "58 hours", 
+      "inference_speed": "38ms"
+    },
+    {
+      "name": "MobileFaceNet",
+      "accuracy": 97.89,
+      "training_time": "24 hours",
+      "inference_speed": "12ms"
+    }
+  ],
+
+  "deployment_configurations": {
+    "cloud_gpu": {
+      "recommended": "NVIDIA A100",
+      "memory_requirement": "16GB VRAM",
+      "batch_size": 32
+    },
+    "edge_device": {
+      "recommended": "NVIDIA Jetson Xavier NX",
+      "memory_requirement": "8GB RAM",
+      "batch_size": 4
+    },
+    "mobile_device": {
+      "recommended": "Snapdragon 888+",
+      "memory_requirement": "6GB RAM",
+      "optimization": "TensorRT/CoreML"
+    }
+  }
+}

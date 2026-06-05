@@ -1,0 +1,117 @@
+# Celebrity Face Recognition Model Training Configuration
+# High-performance training setup for 15K celebrity face dataset
+
+model:
+  architecture: "ResNet50-ArcFace"
+  backbone: "ResNet50"
+  loss_function: "ArcFace"
+  embedding_size: 512
+  num_classes: 1052
+  dropout_rate: 0.5
+  
+training:
+  batch_size: 64
+  learning_rate: 0.001
+  learning_rate_schedule: "cosine_annealing"
+  optimizer: "AdamW"
+  weight_decay: 0.0001
+  momentum: 0.9
+  epochs: 200
+  early_stopping_patience: 15
+  
+data_augmentation:
+  enabled: true
+  techniques:
+    - horizontal_flip: false  # Faces should not be flipped
+    - rotation: [-15, 15]     # degrees
+    - brightness: [-0.2, 0.2]
+    - contrast: [-0.15, 0.15]
+    - saturation: [-0.1, 0.1]
+    - gaussian_noise:
+        std: 0.02
+    - random_crop: 0.9
+    - color_jitter: 0.1
+
+regularization:
+  label_smoothing: 0.1
+  mixup_alpha: 0.2
+  cutmix_alpha: 1.0
+  autoaugment: "imagenet"
+  
+loss_configuration:
+  arcface:
+    margin: 0.5
+    scale: 64
+    easy_margin: false
+  center_loss:
+    weight: 0.5
+    alpha: 0.5
+  triplet_loss:
+    margin: 0.3
+    weight: 0.1
+
+hardware:
+  gpus: 4
+  gpu_model: "NVIDIA A100"
+  memory_per_gpu: "40GB"
+  mixed_precision: true
+  distributed_training: true
+  gradient_accumulation_steps: 2
+
+data_loading:
+  num_workers: 16
+  prefetch_factor: 2
+  pin_memory: true
+  persistent_workers: true
+  
+validation:
+  frequency: 1  # every epoch
+  metrics:
+    - "verification_accuracy"
+    - "identification_accuracy" 
+    - "equal_error_rate"
+    - "false_acceptance_rate"
+    - "false_rejection_rate"
+  
+checkpointing:
+  save_frequency: 5  # every 5 epochs
+  keep_best_n: 3
+  monitor_metric: "verification_accuracy"
+  mode: "max"
+
+inference:
+  batch_size: 32
+  precision: "fp16"
+  optimization: "tensorrt"
+  target_platforms:
+    - "cuda"
+    - "cpu"
+    - "mobile"
+
+deployment:
+  model_format: "onnx"
+  quantization: "int8"
+  pruning_sparsity: 0.3
+  knowledge_distillation: true
+  
+quality_assurance:
+  cross_validation_folds: 5
+  bias_testing: true
+  fairness_metrics:
+    - "demographic_parity"
+    - "equalized_odds" 
+    - "calibration"
+  privacy_evaluation: true
+
+logging:
+  experiment_name: "celebrity-face-recognition-v3"
+  log_frequency: 100  # steps
+  save_images: true
+  tensorboard: true
+  wandb_project: "face-recognition-research"
+  
+monitoring:
+  early_stopping_metric: "val_verification_accuracy"
+  lr_scheduler_metric: "val_loss"
+  plateau_patience: 5
+  min_lr: 1e-6
