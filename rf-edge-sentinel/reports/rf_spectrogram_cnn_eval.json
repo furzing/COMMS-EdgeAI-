@@ -1,0 +1,303 @@
+{
+  "model_type": "spectrogram_cnn",
+  "labels": [
+    "bpsk",
+    "qpsk",
+    "fsk",
+    "ofdm",
+    "fm",
+    "noise"
+  ],
+  "signal_config": {
+    "sample_rate_hz": 1000000.0,
+    "window_size": 4096,
+    "samples_per_symbol": 8,
+    "snr_db_min": 6.0,
+    "snr_db_max": 24.0,
+    "carrier_offset_hz_max": 80000.0
+  },
+  "windows_per_scenario": 160,
+  "seed": 303,
+  "scenario_metrics": [
+    {
+      "scenario": "nominal",
+      "windows": 160,
+      "accuracy": 0.8625,
+      "mean_confidence": 0.3052,
+      "anomaly_rate": 0.0125,
+      "confusion": {
+        "bpsk": {
+          "bpsk": 21,
+          "qpsk": 0,
+          "fsk": 0,
+          "ofdm": 0,
+          "fm": 0,
+          "noise": 0
+        },
+        "qpsk": {
+          "bpsk": 0,
+          "qpsk": 20,
+          "fsk": 1,
+          "ofdm": 0,
+          "fm": 1,
+          "noise": 0
+        },
+        "fsk": {
+          "bpsk": 0,
+          "qpsk": 4,
+          "fsk": 17,
+          "ofdm": 0,
+          "fm": 2,
+          "noise": 0
+        },
+        "ofdm": {
+          "bpsk": 0,
+          "qpsk": 0,
+          "fsk": 0,
+          "ofdm": 31,
+          "fm": 1,
+          "noise": 8
+        },
+        "fm": {
+          "bpsk": 0,
+          "qpsk": 0,
+          "fsk": 0,
+          "ofdm": 0,
+          "fm": 28,
+          "noise": 0
+        },
+        "noise": {
+          "bpsk": 0,
+          "qpsk": 0,
+          "fsk": 0,
+          "ofdm": 5,
+          "fm": 0,
+          "noise": 21
+        }
+      }
+    },
+    {
+      "scenario": "degraded_comms",
+      "windows": 160,
+      "accuracy": 0.4375,
+      "mean_confidence": 0.2707,
+      "anomaly_rate": 0.0,
+      "confusion": {
+        "bpsk": {
+          "bpsk": 1,
+          "qpsk": 7,
+          "fsk": 15,
+          "ofdm": 0,
+          "fm": 1,
+          "noise": 3
+        },
+        "qpsk": {
+          "bpsk": 0,
+          "qpsk": 9,
+          "fsk": 15,
+          "ofdm": 0,
+          "fm": 1,
+          "noise": 3
+        },
+        "fsk": {
+          "bpsk": 0,
+          "qpsk": 3,
+          "fsk": 19,
+          "ofdm": 0,
+          "fm": 8,
+          "noise": 0
+        },
+        "ofdm": {
+          "bpsk": 0,
+          "qpsk": 0,
+          "fsk": 0,
+          "ofdm": 8,
+          "fm": 0,
+          "noise": 11
+        },
+        "fm": {
+          "bpsk": 0,
+          "qpsk": 3,
+          "fsk": 11,
+          "ofdm": 0,
+          "fm": 7,
+          "noise": 1
+        },
+        "noise": {
+          "bpsk": 0,
+          "qpsk": 0,
+          "fsk": 2,
+          "ofdm": 5,
+          "fm": 1,
+          "noise": 26
+        }
+      }
+    },
+    {
+      "scenario": "bad_clock",
+      "windows": 160,
+      "accuracy": 0.5813,
+      "mean_confidence": 0.3103,
+      "anomaly_rate": 0.15,
+      "confusion": {
+        "bpsk": {
+          "bpsk": 19,
+          "qpsk": 8,
+          "fsk": 5,
+          "ofdm": 0,
+          "fm": 0,
+          "noise": 0
+        },
+        "qpsk": {
+          "bpsk": 2,
+          "qpsk": 19,
+          "fsk": 12,
+          "ofdm": 0,
+          "fm": 0,
+          "noise": 0
+        },
+        "fsk": {
+          "bpsk": 0,
+          "qpsk": 10,
+          "fsk": 15,
+          "ofdm": 0,
+          "fm": 3,
+          "noise": 0
+        },
+        "ofdm": {
+          "bpsk": 0,
+          "qpsk": 2,
+          "fsk": 1,
+          "ofdm": 6,
+          "fm": 2,
+          "noise": 9
+        },
+        "fm": {
+          "bpsk": 2,
+          "qpsk": 9,
+          "fsk": 0,
+          "ofdm": 0,
+          "fm": 11,
+          "noise": 0
+        },
+        "noise": {
+          "bpsk": 0,
+          "qpsk": 1,
+          "fsk": 0,
+          "ofdm": 1,
+          "fm": 0,
+          "noise": 23
+        }
+      }
+    },
+    {
+      "scenario": "confidence_drift",
+      "windows": 160,
+      "accuracy": 0.525,
+      "mean_confidence": 0.2733,
+      "anomaly_rate": 0.0,
+      "confusion": {
+        "bpsk": {
+          "bpsk": 10,
+          "qpsk": 4,
+          "fsk": 6,
+          "ofdm": 0,
+          "fm": 0,
+          "noise": 3
+        },
+        "qpsk": {
+          "bpsk": 2,
+          "qpsk": 13,
+          "fsk": 14,
+          "ofdm": 0,
+          "fm": 2,
+          "noise": 4
+        },
+        "fsk": {
+          "bpsk": 0,
+          "qpsk": 4,
+          "fsk": 17,
+          "ofdm": 0,
+          "fm": 5,
+          "noise": 5
+        },
+        "ofdm": {
+          "bpsk": 0,
+          "qpsk": 1,
+          "fsk": 1,
+          "ofdm": 17,
+          "fm": 0,
+          "noise": 9
+        },
+        "fm": {
+          "bpsk": 0,
+          "qpsk": 1,
+          "fsk": 5,
+          "ofdm": 0,
+          "fm": 14,
+          "noise": 5
+        },
+        "noise": {
+          "bpsk": 0,
+          "qpsk": 1,
+          "fsk": 0,
+          "ofdm": 4,
+          "fm": 0,
+          "noise": 13
+        }
+      }
+    }
+  ],
+  "runtime_benchmarks": {
+    "onnx": [
+      {
+        "runtime": "python_numpy",
+        "available": true,
+        "windows": 160,
+        "accuracy": 0.8625,
+        "latency_ms_p50": 12.2548,
+        "latency_ms_p95": 22.9918,
+        "latency_ms_max": 31.3288
+      },
+      {
+        "runtime": "onnxruntime_cpu",
+        "available": true,
+        "windows": 160,
+        "accuracy": 0.8625,
+        "latency_ms_p50": 0.1971,
+        "latency_ms_p95": 0.3242,
+        "latency_ms_max": 1.5294
+      },
+      {
+        "runtime": "tensorrt",
+        "available": false,
+        "reason": "TensorrtExecutionProvider is not available; providers=['AzureExecutionProvider', 'CPUExecutionProvider']"
+      }
+    ],
+    "quantized_onnx": [
+      {
+        "runtime": "python_numpy",
+        "available": true,
+        "windows": 160,
+        "accuracy": 0.8625,
+        "latency_ms_p50": 5.0963,
+        "latency_ms_p95": 5.3492,
+        "latency_ms_max": 5.8466
+      },
+      {
+        "runtime": "onnxruntime_cpu",
+        "available": true,
+        "windows": 160,
+        "accuracy": 0.2625,
+        "latency_ms_p50": 0.2088,
+        "latency_ms_p95": 0.2957,
+        "latency_ms_max": 0.4555
+      },
+      {
+        "runtime": "tensorrt",
+        "available": false,
+        "reason": "TensorrtExecutionProvider is not available; providers=['AzureExecutionProvider', 'CPUExecutionProvider']"
+      }
+    ]
+  }
+}

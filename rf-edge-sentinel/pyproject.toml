@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rf-edge-sentinel"
+version = "0.1.0"
+description = "Receive-only RF edge intelligence baseline for spectrum awareness."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "numpy>=1.24",
+  "fastapi>=0.110",
+  "uvicorn>=0.27"
+]
+
+[project.optional-dependencies]
+onnx = [
+  "onnx>=1.16",
+  "onnxruntime>=1.18",
+  "sympy>=1.12"
+]
+
+[project.scripts]
+rf-edge-sentinel = "rf_edge_sentinel.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
