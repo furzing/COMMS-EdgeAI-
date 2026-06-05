@@ -26,7 +26,7 @@ Current work:
 
 Real-data edge vision baseline for satellite payload scene triage.
 
-Path: `projects/edge vision baseline for satellite payload scene triage`
+Path: `edge vision baseline for satellite payload scene triage`
 
 Current work:
 
