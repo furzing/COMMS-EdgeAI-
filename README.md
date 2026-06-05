@@ -10,7 +10,7 @@ The focus is practical software: public real data where available, synthetic dat
 
 Receive-only RF signal classification and edge inference.
 
-Path: `projects/rf-edge-sentinel`
+Path: `rf singal calssification and edge inference`
 
 Current work:
 
@@ -26,7 +26,7 @@ Current work:
 
 Real-data edge vision baseline for satellite payload scene triage.
 
-Path: `projects/orbital-vision-payload`
+Path: `projects/edge vision baseline for satellite payload scene triage`
 
 Current work:
 
