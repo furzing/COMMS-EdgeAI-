@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: smart-home-face-recognition-api
+    runtime: node
+    plan: starter
+    region: oregon
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: FACE_RECOGNITION_API_URL
+        value: https://api.face-recognition.smartiot.ai/v1/recognize
+      - key: ALLOWED_ORIGINS
+        value: "*"
+    healthCheckPath: /health
+    numInstances: 1
+    scaling:
+      minInstances: 1
+      maxInstances: 3
+      targetCPUPercent: 70
+      targetMemoryPercent: 80
