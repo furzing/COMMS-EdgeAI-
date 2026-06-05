@@ -46,7 +46,7 @@ export class FaceRecognitionService {
   private celebrityDatabase: Map<string, any> = new Map();
 
   constructor() {
-    this.modelEndpoint = process.env.FACE_RECOGNITION_API_URL || '';
+    this.modelEndpoint = process.env.FACE_RECOGNITION_API_URL || 'https://api.face-recognition.example.com/v1/recognize';
     this.initializeModels();
     this.loadCelebrityDatabase();
   }

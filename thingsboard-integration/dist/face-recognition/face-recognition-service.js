@@ -9,7 +9,7 @@ class FaceRecognitionService {
     constructor() {
         this.isInitialized = false;
         this.celebrityDatabase = new Map();
-        this.modelEndpoint = process.env.FACE_RECOGNITION_API_URL || '';
+        this.modelEndpoint = process.env.FACE_RECOGNITION_API_URL || 'https://api.face-recognition.example.com/v1/recognize';
         this.initializeModels();
         this.loadCelebrityDatabase();
     }
