@@ -10,7 +10,7 @@ services:
       - key: NODE_ENV
         value: production
       - key: FACE_RECOGNITION_API_URL
-        value: https://api.face-recognition.smartiot.ai/v1/recognize
+        sync: false
       - key: ALLOWED_ORIGINS
         value: "*"
     healthCheckPath: /health
