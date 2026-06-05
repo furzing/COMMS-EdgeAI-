@@ -6,5 +6,5 @@ __pycache__/
 .venv/
 artifacts/
 data/
-projects/rf-edge-sentinel/artifacts/
-projects/rf-edge-sentinel/data/
+rf\ singal\ calssification\ and\ edge\ inference/artifacts/
+rf\ singal\ calssification\ and\ edge\ inference/data/
